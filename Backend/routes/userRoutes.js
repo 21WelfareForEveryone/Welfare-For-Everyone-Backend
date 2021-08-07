@@ -1,3 +1,5 @@
+// 앱과 통신하는 라우터 
+
 const express = require('express');
 const userController = require('../controllers/userController');
 const router = express.Router();

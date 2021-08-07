@@ -1,3 +1,5 @@
+// User 모델 생성 
+
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
 

@@ -1,10 +1,13 @@
-const User = require('../models/user');
-let jwt = require("jsonwebtoken");
-let secretObj = require("../config/jwt");
+const User = require('../models/user'); // User 모델 
+let jwt = require("jsonwebtoken"); // 암호화를 위한 jwt 모듈
+let secretObj = require("../config/jwt"); // key 모듈
 
+// 로그인 Request 처리
 exports.userLogin = (req, res, next) => {
+    // id로 해당 아이디를 가진 데이터를 db에서 찾기
     User.findByPk(req.body.user_id).then(user=>{
         if (req.body.user_id == user.user_id && req.body.user_password == user.user_password){
+            // 있다면 성공 json 보내기
             res.send(JSON.stringify({
                 "success": true,
                 "statusCode" : 200,
@@ -12,6 +15,7 @@ exports.userLogin = (req, res, next) => {
             }));
         }
         else{
+            // 없다면 실패 json 보내기
             res.send(JSON.stringify({
                 "success": false,
                 "statusCode" : 400,
@@ -20,6 +24,7 @@ exports.userLogin = (req, res, next) => {
         }
     })
     .catch(err=>{
+        // 오류시 실패 json 보내기
         res.send(JSON.stringify({
             "success": false,
             "statusCode" : 400,
@@ -28,7 +33,9 @@ exports.userLogin = (req, res, next) => {
     });
 }
 
+// 회원가입 Request 처리
 exports.userRegister = (req, res, next) => {
+    // 토큰 생성 
     let token = jwt.sign({
         user_id : req.body.user_id,
         user_password : req.body.user_password,
@@ -37,6 +44,7 @@ exports.userRegister = (req, res, next) => {
     , secretObj.secret
     , { expiresIn: '365d'});
     
+    // User 객체 생성
     User.create({
         user_id: req.body.user_id,
         user_password: req.body.user_password,
@@ -53,6 +61,7 @@ exports.userRegister = (req, res, next) => {
         user_mToken: token
     })
     .then(result=>{
+        // 성공시 성공 json 보내기
         res.send(JSON.stringify({
             "success": true,
             "statusCode" : 200,
@@ -60,7 +69,7 @@ exports.userRegister = (req, res, next) => {
         }));
     })
     .catch(err=>{
-        console.log(err);
+        // 오류시 실패 json 보내기
         res.send(JSON.stringify({
             "success": false,
             "statusCode" : 400,
@@ -69,14 +78,13 @@ exports.userRegister = (req, res, next) => {
     });
 }
 
+// 유저의 정보를 가져다주는 함수
 exports.userRead = (req, res, next) => {
-
-
-    
 }
 
+// 유저 정보 갱신 Request 처리
 exports.userUpdate = (req, res, next) => {
-    
+    // 유저 정보 업데이트 
     User.update({
         user_id:req.body.user_id,
         user_password:req.body.user_password,
@@ -92,6 +100,7 @@ exports.userUpdate = (req, res, next) => {
         user_interest: req.body.user_interest,
     }, { where: { user_mToken: req.body.token }})
     .then(result=>{
+        // 성공시 성공 json 보내기
         res.send(JSON.stringify({
             "success": true,
             "statusCode" : 200,
@@ -99,6 +108,7 @@ exports.userUpdate = (req, res, next) => {
         }));
     })
     .catch(err=>{
+        // 오류시 실패 json 보내기
         res.send(JSON.stringify({
             "success": false,
             "statusCode" : 400,
@@ -107,20 +117,25 @@ exports.userUpdate = (req, res, next) => {
     }); 
 }
 
+// 유저 삭제 Request 처리
 exports.userDelete = (req, res, next) => {
+    // 토큰 값으로 해당 유저 검색
     User.findOne({
         where: { user_mToken: req.body.token }
       })
       .then(user=>{
+        // 성공시 삭제
         user.destroy();
       })
       .then(result=>{
+        // 삭제후 성공 json 보내기 
         res.send(JSON.stringify({
             "success": true,
             "statusCode" : 200
         }));
       })
       .catch(err=>{
+        // 오류시 실패 json 보내기 
         res.send(JSON.stringify({
             "success": false,
             "statusCode" : 400
