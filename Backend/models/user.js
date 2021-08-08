@@ -78,6 +78,9 @@ const User = sequelize.define('user', {
         type : Sequelize.STRING
     }
 }, {
-    timestamps: false
+    charset: "utf8", // char format 설정
+    collate: "utf8_general_ci", // 한국어 설정 
+    timestamps: false, // filestamps 비활성화
+    tableName: "users" // 연결할 table 이름 설정 
 });
 module.exports = User;
