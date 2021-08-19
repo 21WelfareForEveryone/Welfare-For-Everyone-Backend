@@ -2,6 +2,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/node,visualstudiocode,osx,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,visualstudiocode,osx,windows
 
+# Firebase Server Key Info
+config/
+
 ### Node ###
 # Logs
 logs

@@ -1,14 +1,30 @@
-// 필요한 모듈 가져오기
+// Importing Modules
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
-const userRoutes = require('./routes/userRoutes');
 
+const userRoutes = require('./routes/userRoutes');
+const dibsRoutes = require('./routes/dibsRoutes');
+const welfareRoutes = require('./routes/welfareRoutes');
+const pushRoutes = require('./routes/pushRoutes');
+
+// FCM 푸시알림 테스트 코드입니다.
+const admin = require('firebase-admin')
+let serviceAccount = require('./config/hazel-cedar-312311-firebase-adminsdk-75xw8-925ef33419.json')
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+
+// Parsing middleware 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(userRoutes); // user router 연결
+// Routers 
+app.use(pushRoutes);
+app.use(userRoutes);
+app.use(dibsRoutes);
+app.use(welfareRoutes);
 
 app.listen(80);
