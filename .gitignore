@@ -2,8 +2,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/node,visualstudiocode,osx,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,visualstudiocode,osx,windows
 
-# Firebase Server Key Info 
-hazel-cedar-312311-firebase-adminsdk-75xw8-63ca59049b.json
+# Firebase Server Key Info
+config/
 
 ### Node ###
 # Logs
