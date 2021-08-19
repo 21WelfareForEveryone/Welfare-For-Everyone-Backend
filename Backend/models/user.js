@@ -5,10 +5,10 @@ const sequelize = require('../utils/database');
 
 const User = sequelize.define('user', {
     user_id : {
+        primaryKey : true, 
         allowNull : false,
         unique : true,
-        type : Sequelize.STRING,
-        primaryKey : true,
+        type : Sequelize.STRING
     }, 
     user_password : {
         allowNull : false,
@@ -37,7 +37,12 @@ const User = sequelize.define('user', {
         unique : false,
         type : Sequelize.INTEGER
     },
-    user_family : {
+    user_is_multicultural : {
+        allowNull : true,
+        unique : false,
+        type : Sequelize.INTEGER
+    },
+    user_family_state : {
         allowNull : true,
         unique : false,
         type : Sequelize.INTEGER
@@ -57,25 +62,15 @@ const User = sequelize.define('user', {
         unique : false,
         type : Sequelize.INTEGER
     },
-    user_interest : {
-        allowNull : true,
-        unique : false,
-        type : Sequelize.INTEGER
-    },
-    last_update : {
-        allowNull : true,
-        unique : false,
-        type : Sequelize.DATE
-    },
     user_mToken : {
         allowNull : true,
         unique : false,
         type : Sequelize.TEXT
     },
-    usercol : {
+    last_update : {
         allowNull : true,
         unique : false,
-        type : Sequelize.STRING
+        type : Sequelize.DATE
     }
 }, {
     charset: "utf8", // char format 설정
