@@ -11,7 +11,7 @@ const pushRoutes = require('./routes/pushRoutes');
 
 // FCM 푸시알림 테스트 코드입니다.
 const admin = require('firebase-admin')
-let serviceAccount = require('./config/hazel-cedar-312311-firebase-adminsdk-75xw8-925ef33419.json')
+let serviceAccount = require('./config/hazel-cedar-312311-firebase-adminsdk-75xw8-efe9c58e9f.json')
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routers 
 app.use(pushRoutes);
 app.use(userRoutes);
-app.use(dibsRoutes);
 app.use(welfareRoutes);
+app.use(dibsRoutes);
 
 app.listen(80);

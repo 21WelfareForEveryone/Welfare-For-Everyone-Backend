@@ -42,7 +42,7 @@ const User = sequelize.define('user', {
         unique : false,
         type : Sequelize.INTEGER
     },
-    user_family_state : {
+    user_is_one_parent : {
         allowNull : true,
         unique : false,
         type : Sequelize.INTEGER

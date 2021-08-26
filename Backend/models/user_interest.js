@@ -3,8 +3,8 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
 
-const User_dibs = sequelize.define('user_dib', {
-    like_id : {
+const User_interest = sequelize.define('user_interest', {
+    interest_id : {
         primaryKey : true,
         autoIncrement: true,
         allowNull : false,
@@ -14,14 +14,14 @@ const User_dibs = sequelize.define('user_dib', {
         allowNull : false,
         type : Sequelize.STRING,
     }, 
-    welfare_id : {
+    category_id : {
         allowNull : false,
-        type : Sequelize.STRING
+        type : Sequelize.INTEGER
     }
 }, {
     charset: "utf8", // char format 설정
     collate: "utf8_general_ci", // 한국어 설정 
     timestamps: false, // filestamps 비활성화
-    tableName: "user_like" // 연결할 table 이름 설정 
+    tableName: "user_interest" // 연결할 table 이름 설정 
 });
-module.exports = User_dibs;
+module.exports = User_interest;

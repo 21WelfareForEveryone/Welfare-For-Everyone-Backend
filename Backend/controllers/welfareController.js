@@ -1,9 +1,39 @@
 const Welfare = require('../models/welfare'); // 복지정보 모델
-const User_dibs = require('../models/dibs'); // 찜 모델 
-let jwt = require("jsonwebtoken"); // 토큰 관리를 위한 jwt 모듈
-let secretObj = require("../config/jwt"); // jwt key 모듈
 
-// 복지 정보 Request 처리 
+// 복지 정보 Create Request 처리 
+exports.createWelfare = (req, res, next) => {
+    Welfare.create({
+        welfare_id: req.body.welfare_id,
+        title: req.body.title,
+        summary: req.body.summary,
+        who: req.body.who,
+        criteria: req.body.criteria,
+        what: req.body.what,
+        how: req.body.how,
+        calls: req.body.calls,
+        sites: req.body.sites,
+        like_count: 0
+    })
+    .then(result=>{
+        // 성공 json 보내기
+        res.send(JSON.stringify({
+            "success": true,
+            "statusCode" : 201,
+            "welfare_id" : req.body.welfare_id
+        }));
+    })
+    .catch(err=>{
+        console.log(err);
+        // 실패 json 보내기
+        res.send(JSON.stringify({
+            "success": false,
+            "statusCode" : 202,
+            "welfare_id" : "DENIED"
+        }));
+    })
+}
+
+// 복지 정보 Read Request 처리 
 exports.readWelfare = (req, res, next) => {
     Welfare.findByPk(req.body.welfare_id)
     .then(welfare=>{
@@ -20,7 +50,8 @@ exports.readWelfare = (req, res, next) => {
             "how": welfare.how,
             "calls" : welfare.calls,
             "sites": welfare.sites,
-            "category" : welfare.category        
+            "category" : welfare.category,
+            "like_count": welfare.like_count        
         })); 
     })
     .catch(err=>{
@@ -34,18 +65,7 @@ exports.readWelfare = (req, res, next) => {
     })
 }
 
-// 관심 복지 정보 Request 처리 
-exports.readDibsWelfare = (req, res, next) => {
-    // 토큰 복호화 
-    const user_info = jwt.verify(req.body.token, secretObj.secret);
-
-    User_dibs.findAll({
-        where: { user_id: user_info.user_id }
-    })
-    .then(userDibs =>{
-        Welfare.findAll({where: {welfare_id: userDibs.welfare_id}})
-        .then(result =>{
-            console.log(result);
-        })
-    })
+// 복지 정보 Delete Request 처리 
+exports.deleteWelfare = (req, res, next) => {
+    // 나중에 필요시 구현예정
 }

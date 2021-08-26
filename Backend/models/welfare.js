@@ -38,7 +38,7 @@ const Welfare = sequelize.define('welfare', {
     category : {
         type : Sequelize.INTEGER
     },
-    dibs_count : {
+    like_count : {
         type : Sequelize.INTEGER
     }
 }, {
