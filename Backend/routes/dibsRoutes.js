@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const dibsController = require('../controllers/dibsController');
 
-router.post('/rest/dibs/add', dibsController.createDib);
+router.post('/rest/dibs/create', dibsController.createDibs);
+router.get('/rest/dibs/read', dibsController.readDibs);
+router.delete('/rest/dibs/delete', dibsController.deleteDibs);
 
 module.exports = router;

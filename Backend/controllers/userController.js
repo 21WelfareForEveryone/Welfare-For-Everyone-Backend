@@ -1,4 +1,6 @@
 const User = require('../models/user'); // User 모델 
+const User_interest = require('../models/user_interest'); // User_interest 모델
+const User_dibs = require('../models/dibs'); // 찜 모델 
 let jwt = require("jsonwebtoken"); // 토큰 관리를 위한 jwt 모듈
 let secretObj = require("../config/jwt"); // jwt key 모듈 
 const crypto = require('crypto'); // 비밀번호 해시화 모듈
@@ -57,15 +59,54 @@ exports.userRegister = (req, res, next) => {
         user_password: hashed_pw,
         user_name: req.body.user_name,
         user_gender: req.body.user_gender,
-        user_age: req.body.user_age,
         user_address: req.body.user_address,
         user_life_cycle: req.body.user_life_cycle,
         user_is_multicultural: req.body.user_is_multicultural,
-        user_family_state: req.body.user_family_state,
+        user_is_one_parent: req.body.user_is_one_parent,
         user_income: req.body.user_income,
         user_is_disabled: req.body.user_is_disabled,
-        user_is_veterans: req.body.user_is_veterans,
         user_mToken: req.body.token_firebase
+    })
+    .then(result =>{
+        // 관심 카테고리 테이블 생성 
+        // 영유아~노년에 대한 관심 카테고리 생성 
+        User_interest.create({
+            user_id : req.body.user_id,
+            category_id : req.body.user_life_cycle
+        })
+        // 장애인일 경우 
+        if(req.body.user_is_disabled == 1){
+            User_interest.create({
+                user_id : req.body.user_id,
+                category_id : 5
+            })
+        }
+        // 한부모일 경우
+        if(req.body.user_is_one_parent == 1){
+            User_interest.create({
+                user_id : req.body.user_id,
+                category_id : 6
+            })
+        }
+        // 다문화일 경우
+        if(req.body.user_is_multicultural == 1){
+            User_interest.create({
+                user_id : req.body.user_id,
+                category_id : 7
+            })
+        }
+        // 저소득층일 경우
+        if(req.body.user_income == 1){
+            User_interest.create({
+                user_id : req.body.user_id,
+                category_id : 8
+            })
+        }
+        // 나머지 관심 카테고리 추가
+        User_interest.create({
+            user_id : req.body.user_id,
+            category_id : (req.body.user_interest + 9)
+        })    
     })
     .then(result=>{
         // 성공시 토큰 생성 
@@ -102,24 +143,37 @@ exports.userRead = (req, res, next) => {
     // 토큰 값으로 해당 유저 검색
     User.findByPk(user_info.user_id)
       .then(user=>{
-        // 성공시 유저 정보 json 보내기
-        res.send(JSON.stringify({
-            "success": true,
-            "statusCode" : 200,
-            "token" : req.body.token,
-            "user_id": user.user_id,
-            "user_password": user_info.user_password,
-            "user_name": user.user_name,
-            "user_gender": user.user_gender,
-            "user_age": user.user_age,
-            "user_address": user.user_address,
-            "user_life_cycle": user.user_life_cycle,
-            "user_is_multicultural": user.user_is_multicultural,
-            "user_family_state": user.user_family_state,
-            "user_income": user.user_income,
-            "user_is_disabled": user.user_is_disabled,
-            "user_is_veterans": user.user_is_veterans
-        }));  
+        User_interest.findAll( {
+            where: { user_id: user_info.user_id },
+            raw: true
+        })
+        .then(result => {
+            // Response로 보낼 user interest 찾기 
+            interest = -1
+            result.forEach(element => {
+            if(element.category_id >= 9){
+                interest = element.category_id
+            }
+            });
+
+            // 성공시 유저 정보 json 보내기
+            res.send(JSON.stringify({
+                "success": true,
+                "statusCode" : 200,
+                "token" : req.body.token,
+                "user_id": user.user_id,
+                "user_password": user_info.user_password,
+                "user_name": user.user_name,
+                "user_gender": user.user_gender,
+                "user_address": user.user_address,
+                "user_life_cycle": user.user_life_cycle,
+                "user_is_multicultural": user.user_is_multicultural,
+                "user_is_one_parent": user.user_is_one_parent,
+                "user_income": user.user_income,
+                "user_is_disabled": user.user_is_disabled,
+                "user_interest" : interest
+            }));  
+        })
       })
       .catch(err=>{
         console.log(err);
@@ -184,11 +238,25 @@ exports.userDelete = (req, res, next) => {
     // 토큰 복호화 
     const user_info = jwt.verify(req.body.token, secretObj.secret);
 
+    
+
     // 토큰 값으로 해당 유저 검색
-    User.findOne({where: { user_id: user_info.user_id }})
-      .then(user=>{
-        // 성공시 삭제
-        user.destroy();
+    User.destroy({where: { user_id: user_info.user_id }})
+      .then(()=>{
+        // user_interest 테이블에서도 삭제
+        User_interest.destroy({
+            where: {
+             user_id: user_info.user_id
+           }
+        })
+      })
+      .then(()=>{
+        // user_like 테이블에서도 삭제
+        User_dibs.destroy({
+            where: {
+             user_id: user_info.user_id
+           }
+        })
       })
       .then(result=>{
         // 삭제후 성공 json 보내기 
@@ -198,6 +266,7 @@ exports.userDelete = (req, res, next) => {
         }));
       })
       .catch(err=>{
+        console.log(err);
         // 오류시 실패 json 보내기 
         res.send(JSON.stringify({
             "success": false,
