@@ -68,26 +68,26 @@ exports.readWelfare = (req, res, next) => {
     })
 }
 
-// 복지 정보 Search Request (디버깅 필요)
+// 복지 정보 Search Request
 exports.searchWelfare = (req, res, next) => {
     // Request로부터 Category 번호 받기
     const category = req.body.welfare_category;
-    const welfare_num = 10;
+    let welfare_num = 0;
     
     // 해당 Category 번호에 해당하는 복지의 welfare_id 배열로 추출 
     Welfare_category.findAll({where: {category_id: category}, raw: true})
     .then(welfare_info => {
         // console.log(welfare_info);
-        const welfare_ids = [];
+        let welfare_ids = [];
         welfare_info.forEach(element=>{
-            welfare_ids.push(element.welfare_id);
-            welfare_num += 1;
-
-            if(welfare_num > 10){
-                break;
+            if(welfare_num < 10){
+                welfare_ids.push(element.welfare_id);
+                console.log(element.welfare_id);
             }
+            welfare_num += 1;
         })
-
+        console.log(welfare_ids);
+        
         // welfare_id 배열에 들어있는 복지 정보를 Response로 반환
         Welfare.findAll({where: { welfare_id: welfare_ids }, raw: true})
         .then(result=>{

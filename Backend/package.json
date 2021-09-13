@@ -31,8 +31,10 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "mysql2": "^2.3.0",
+    "node-fetch": "^2.6.1",
     "path": "^0.12.7",
     "regenerator-runtime": "^0.13.9",
+    "request": "^2.88.2",
     "sequelize": "^6.6.5",
     "uuid4": "^2.0.2"
   },

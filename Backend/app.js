@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoutes');
 const dibsRoutes = require('./routes/dibsRoutes');
 const welfareRoutes = require('./routes/welfareRoutes');
 const pushRoutes = require('./routes/pushRoutes');
+const chatbotRoutes = require('./routes/chatbotRoutes');
 
 // FCM 푸시알림 테스트 코드입니다.
 const admin = require('firebase-admin')
@@ -26,5 +27,6 @@ app.use(pushRoutes);
 app.use(userRoutes);
 app.use(welfareRoutes);
 app.use(dibsRoutes);
+app.use(chatbotRoutes);
 
 app.listen(80);
