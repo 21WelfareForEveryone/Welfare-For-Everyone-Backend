@@ -19,8 +19,9 @@ admin.initializeApp({
 
 // Parsing middleware 
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json())
 
 // Routers 
 app.use(pushRoutes);

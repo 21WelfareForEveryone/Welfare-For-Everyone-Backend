@@ -2,6 +2,7 @@ const Welfare = require('../models/welfare'); // 복지정보 모델
 const Welfare_category = require('../models/welfare_category'); // 복지정보-카테고리 모델
 const User_recommended = require('../models/user_recommended'); // 추천복지 정보 모델
 const User = require('../models/user'); // User 모델 
+const fetch = require('node-fetch');
 
 // 복지 정보 Create Request 처리 
 exports.createWelfare = (req, res, next) => {
@@ -105,32 +106,32 @@ exports.searchWelfare = (req, res, next) => {
     })
 }
 
-// 추천 복지 정보 GET Request (디버깅 필요)
+// 추천 복지 정보 GET Request 
 exports.recommendedWelfare = (req, res, next) => {
     // 토큰 복호화 
     const user_info = jwt.verify(req.body.token, secretObj.secret);
 
-    // 토큰으로 온 user_id에 대한 추천 복지 id를 추출한다.
-    User_recommended.findAll({where: {user_id: user_info.user_id}, raw: true})
-    .then(user_id => {
-        const welfare_ids = [];
+    // 민규 서버로 Request 보내기 
+    // Response로 도착한 추천복지 6개의 id의 전체 정보를 서버로부터 받아서 res로 전달
 
-        user_id.forEach(element=>{
-            welfare_ids.push(element.welfare_id);
-        })
-        
-        // 추출된 복지 id에 대한 복지정보를 Response로 보낸다. 
-        Welfare.findAll({where: { welfare_id: welfare_ids }, raw: true})
-        .then(result=>{
-            // 성공시 성공 json 보내기
-            res.send(JSON.stringify({
-                "success": true,
-                "statusCode" : 201,
-                "recommend_welfare_list": result,
-                "token" : req.body.token
-            }));
-        })
+    /*
+    Front-end 작업을 위한 Dummy Data Res Codes
+    */
+    dummyIds = [0,1,2,3,4];
+    Welfare.findAll({where: { welfare_id: dummyIds }, raw: true})
+    .then(result=>{
+        // 성공시 성공 json 보내기
+        res.send(JSON.stringify({
+            "success": true,
+            "statusCode" : 201,
+            "recommend_welfare_list": result,
+            "token" : req.body.token
+        }));
     })
+    .catch(err => {
+        console.log(err);
+    })
+    
 }
 
 // 복지 정보 Delete Request 처리 
