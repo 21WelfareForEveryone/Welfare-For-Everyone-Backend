@@ -57,11 +57,6 @@ const User = sequelize.define('user', {
         unique : false,
         type : Sequelize.INTEGER
     },
-    user_is_veterans : {
-        allowNull : true,
-        unique : false,
-        type : Sequelize.INTEGER
-    },
     user_mToken : {
         allowNull : true,
         unique : false,
@@ -76,6 +71,6 @@ const User = sequelize.define('user', {
     charset: "utf8", // char format 설정
     collate: "utf8_general_ci", // 한국어 설정 
     timestamps: false, // filestamps 비활성화
-    tableName: "users" // 연결할 table 이름 설정 
+    tableName: "user" // 연결할 table 이름 설정 
 });
 module.exports = User;

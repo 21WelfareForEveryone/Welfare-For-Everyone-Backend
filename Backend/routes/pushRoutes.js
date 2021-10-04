@@ -1,30 +1,34 @@
 const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin')
+const pushController = require('../controllers/pushController');
 
-router.get('/push_send', async function(req, res){
-  let deviceToken = ``;
+router.post('/push/getinfo', pushController.getInfo);
+router.post('/push/toggle', pushController.pushToggle);
 
-  let message = {
-      notification : {
-          title: 'PushAlarms Test',
-          body:'Check your CoupangEats',
-      },
-      token:deviceToken,
-  }
+// router.get('/push_send', async function(req, res){
+//   let deviceToken = ``;
 
-  admin
-      .messaging()
-      .send(message)
-      .then(function(response){
-          console.log('Successfully sent message:', response)
-          return res.status(200).json({success: true})
-      })
-      .catch(function(err) {
-          console.log('Error Sending message!!! : ', err)
-          return res.status(400).json({success: false})
-      });
-})
+//   let message = {
+//       notification : {
+//           title: 'PushAlarms Test',
+//           body:'Check your CoupangEats',
+//       },
+//       token:deviceToken,
+//   }
+
+//   admin
+//       .messaging()
+//       .send(message)
+//       .then(function(response){
+//           console.log('Successfully sent message:', response)
+//           return res.status(200).json({success: true})
+//       })
+//       .catch(function(err) {
+//           console.log('Error Sending message!!! : ', err)
+//           return res.status(400).json({success: false})
+//       });
+// })
 
 // // push PAGE
 // router.get('/push_send', function (req, res, next) {

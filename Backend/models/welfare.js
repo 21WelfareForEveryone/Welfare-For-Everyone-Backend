@@ -35,12 +35,19 @@ const Welfare = sequelize.define('welfare', {
     sites : {
         type : Sequelize.STRING
     },
-    category : {
-        type : Sequelize.INTEGER
+    start_date : {
+        type : Sequelize.DATE
+    },
+    end_date : {
+        type : Sequelize.DATE
+    },
+    url : {
+        type : Sequelize.STRING
     },
     like_count : {
         type : Sequelize.INTEGER
     }
+
 }, {
     charset: "utf8", // char format 설정
     collate: "utf8_general_ci", // 한국어 설정 

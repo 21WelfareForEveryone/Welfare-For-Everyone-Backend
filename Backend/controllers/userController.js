@@ -206,8 +206,7 @@ exports.userUpdate = (req, res, next) => {
         user_is_multicultural: req.body.user_is_multicultural,
         user_family_state: req.body.user_family_state,
         user_income: req.body.user_income,
-        user_is_disabled: req.body.user_is_disabled,
-        user_is_veterans: req.body.user_is_veterans
+        user_is_disabled: req.body.user_is_disabled
     }, { where: { user_id: user_info.user_id }})
     .then(result=>{
         // 성공시 토큰 생성 
@@ -237,8 +236,6 @@ exports.userUpdate = (req, res, next) => {
 exports.userDelete = (req, res, next) => {
     // 토큰 복호화 
     const user_info = jwt.verify(req.body.token, secretObj.secret);
-
-    
 
     // 토큰 값으로 해당 유저 검색
     User.destroy({where: { user_id: user_info.user_id }})
