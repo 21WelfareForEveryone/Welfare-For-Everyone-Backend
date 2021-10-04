@@ -1,8 +1,9 @@
 // DB 연결
+let dbInfo = require("../config/dbInfo");  
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize("welfare-for-everyone", 'root', '1357', {
+const sequelize = new Sequelize("welfare-for-everyone", 'root', dbInfo.password, {
   dialect: 'mysql',
-  host: '34.64.116.88'
+  host: dbInfo.ip
 });
 
 module.exports = sequelize;

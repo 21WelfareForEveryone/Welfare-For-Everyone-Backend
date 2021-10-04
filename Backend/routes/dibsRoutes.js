@@ -3,7 +3,7 @@ const router = express.Router();
 const dibsController = require('../controllers/dibsController');
 
 router.post('/rest/dibs/create', dibsController.createDibs);
-router.get('/rest/dibs/read', dibsController.readDibs);
+router.post('/rest/dibs/read', dibsController.readDibs);
 router.delete('/rest/dibs/delete', dibsController.deleteDibs);
 
 module.exports = router;
