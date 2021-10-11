@@ -42,7 +42,8 @@ exports.getResponse = (req, res, next) =>{
 
     // send Request to kmg2933
     const options = {
-        uri: 'http://172.30.1.57:3000/chatbot',
+        // uri: 'http://172.30.1.57:3000/chatbot',
+        uri: 'http://34.64.176.63:3000/chatbot',
         method: 'POST',
         json: {
             "message" : user_message,
@@ -90,7 +91,8 @@ exports.getResponse = (req, res, next) =>{
                     
                     // send Request to kobert
                     const optionsKobert = {
-                        uri: 'http://172.30.1.57:5000/sebert_title',
+                        // uri: 'http://172.30.1.57:5000/sebert_title',
+                        uri: 'http://34.64.176.63:5000/sebert_title',
                         method: 'POST',
                         json: {
                             "query" : user_message
