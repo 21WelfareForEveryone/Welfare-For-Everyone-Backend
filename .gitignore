@@ -3,7 +3,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,visualstudiocode,osx,windows
 
 # Firebase Server Key Info
-config/
+hazel-cedar-312311-firebase-adminsdk-75xw8-efe9c58e9f.json
 
 ### Node ###
 # Logs
