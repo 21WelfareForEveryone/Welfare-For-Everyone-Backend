@@ -12,8 +12,8 @@ const { Op } = require("sequelize");
 
 module.exports = {
   check: () => {
-    // schedule.scheduleJob('0 0 8 * * *', async()=>{
-    schedule.scheduleJob('5 * * * * *', async()=>{
+    schedule.scheduleJob('0 0 8 * * *', async()=>{
+    // schedule.scheduleJob('5 * * * * *', async()=>{
         
         // 현재 시간
         const curr = new Date();
