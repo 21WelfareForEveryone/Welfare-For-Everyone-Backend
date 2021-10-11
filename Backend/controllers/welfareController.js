@@ -90,7 +90,7 @@ exports.searchWelfare = (req, res, next) => {
         console.log(welfare_ids);
         
         // welfare_id 배열에 들어있는 복지 정보를 Response로 반환
-        Welfare.findAll({where: { welfare_id: welfare_ids }, raw: true})
+        Welfare.findAll({where: { welfare_id: welfare_ids },order: [['like_count', 'DESC']], raw: true})
         .then(result=>{
             // 성공시 성공 json 보내기
             res.send(JSON.stringify({
