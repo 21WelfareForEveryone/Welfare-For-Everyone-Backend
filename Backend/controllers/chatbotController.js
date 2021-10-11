@@ -5,6 +5,7 @@ var request = require('request'); // Request 생성을 위한 라이브러리 �
 // const https = require('https')
 const Welfare = require('../models/welfare'); // 복지정보 모델
 const fetch = require('node-fetch');
+const chatbotInfo = require("../config/chatbot.json");  
 
 const serverURL = "http://172.30.1.57:3000"
 
@@ -59,6 +60,7 @@ exports.getResponse = (req, res, next) =>{
             //     "type": "welfare",
             //     "welfare": undefined
             // }
+            
             // case 1. "type" == "welfare"일 경우
             if (kmgResponse.type == 'welfare') {
                 console.log('welfare!');
@@ -88,7 +90,7 @@ exports.getResponse = (req, res, next) =>{
                     
                     // send Request to kobert
                     const optionsKobert = {
-                        uri: 'http://172.30.1.57:5000/sebert',
+                        uri: 'http://172.30.1.57:5000/sebert_title',
                         method: 'POST',
                         json: {
                             "query" : user_message
@@ -120,12 +122,20 @@ exports.getResponse = (req, res, next) =>{
                     });
                 }
                 else {
+                    let message = "";
+                    chatbotInfo.forEach(element => {
+                        if (element.id == kmgResponse.message) {
+                            console.log(element.message);
+                            element.message = message
+                        }
+                    });
+                    
                     console.log("message!");
                     res.send(JSON.stringify({
                         "success": true,
                         "statusCode" : 200,
                         "message_type": 0,
-                        "message_content": kmgResponse.message,
+                        "message_content":  message,
                         "welfare_info": null
                     }));
                 }

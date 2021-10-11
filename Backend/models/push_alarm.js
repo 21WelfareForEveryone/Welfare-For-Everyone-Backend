@@ -15,6 +15,10 @@ const Push_alarm = sequelize.define('push_alarm', {
     welfare_id : {
         allowNull : false,
         type : Sequelize.INTEGER
+    },
+    d_day : {
+        allowNull : false,
+        type : Sequelize.DATE
     }
 }, {
     charset: "utf8", // char format 설정
