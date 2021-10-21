@@ -25,8 +25,8 @@ exports.getInfo = (req, res, next) => {
         });
     })
     .then(()=>{
-        Welfare.findAll({where: {end_date : { [Op.gte] : curDate}}, order: [['like_count', 'DESC']], raw: true})
-        .then(result=>{
+        Welfare.findAll({where: {start_date : { [Op.gte] : curDate}}, order: [['like_count', 'DESC']], raw: true})
+	.then(result=>{
             let welfare_list = [];
             let count = 5-welfare_list_on.length;
             // console.log(welfare_list_on);

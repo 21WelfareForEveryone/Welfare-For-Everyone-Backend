@@ -40,21 +40,25 @@ exports.getResponse = (req, res, next) =>{
     const user_info = jwt.verify(req.body.token, secretObj.secret);
     user_message = req.body.chat_message;
 
+    console.log('Chatbot API!');
+
     // send Request to kmg2933
     const options = {
         // uri: 'http://172.30.1.57:3000/chatbot',
-        uri: 'http://34.64.176.63:3000/chatbot',
+        uri: 'http://10.178.0.10:4000/chatbot',
         method: 'POST',
         json: {
             "message" : user_message,
             "id" : user_info.user_id
         }
     };
+
     let kmgResponse = {};
     request(options, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            kmgResponse = body;
-
+        
+	if (!error && response.statusCode == 200) {
+		kmgResponse = body;
+           
             // kmgResponse = 
             // {
             //     "message": "350",
@@ -92,10 +96,11 @@ exports.getResponse = (req, res, next) =>{
                     // send Request to kobert
                     const optionsKobert = {
                         // uri: 'http://172.30.1.57:5000/sebert_title',
-                        uri: 'http://34.64.176.63:5000/sebert_title',
+                        uri: 'http://10.178.0.10:5000/sebert',
                         method: 'POST',
                         json: {
-                            "query" : user_message
+                            "query" : user_message,
+				"standard":"full"
                         }
                     };
                     let kobertResponse = {};
@@ -128,7 +133,7 @@ exports.getResponse = (req, res, next) =>{
                     chatbotInfo.forEach(element => {
                         if (element.id == kmgResponse.message) {
                             console.log(element.message);
-                            element.message = message
+                            message = element.message
                         }
                     });
                     
@@ -165,14 +170,14 @@ exports.getResponseDummy1 = (req, res, next) =>{
     if message_type == 1일때 (복지정보를 추천할 경우)
     */
 
-    dummyIds = [0,1,2];
+    dummyIds = [105, 63, 89];
     Welfare.findAll({where: { welfare_id: dummyIds }, raw: true})
     .then(result=>{
         // 성공시 성공 json 보내기
         res.send(JSON.stringify({
             "success": true,
             "statusCode" : 201,
-            "message_type": 0,
+            "message_type": 1,
             "message_content": null,
             "welfare_info": result
         }));

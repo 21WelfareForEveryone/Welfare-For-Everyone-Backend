@@ -1,5 +1,6 @@
 const User_dibs = require('../models/dibs'); // 찜 모델 
 const Welfare = require('../models/welfare'); // 복지정보 모델
+const Welfare_category = require('../models/welfare_category');
 let jwt = require("jsonwebtoken"); // 토큰 관리를 위한 jwt 모듈
 let secretObj = require("../config/jwt"); // jwt key 모듈
 
@@ -31,16 +32,30 @@ exports.createDibs = (req, res, next) => {
                 }
             });
 
-            Welfare.findAll({where: { welfare_id: welfare_ids }, raw: true})
-            .then(result=>{
-                // 성공시 성공 json 보내기
-                res.send(JSON.stringify({
-                    "success": true,
-                    "statusCode" : 201,
-                    "dibs_welfare_list": result,
-                    "token" : req.body.token
-                }));
+            let welfare_list = []
+            Welfare.findAll({where: {welfare_id: welfare_ids}, raw: true})
+            .then(result => {
+                welfare_list = result;
+                Welfare_category.findAll({where:{welfare_id:welfare_ids}, raw: true})
+                .then(result=>{
+                    result.forEach(element1 => {
+                        welfare_list.forEach(element2 => {
+                            if(element1.welfare_id == element2.welfare_id){
+                                element2.category = element1.category_id
+                            }
+                        })
+                    });
+                })
+                .then(()=>{
+                    res.send(JSON.stringify({
+                        "success" : true,
+                        "statusCode": 200,
+                        "dibs_welfare_list" :welfare_list,
+                        "token" : req.body.token
+                    }));
+                })
             })
+
         })
     })
     .catch(err=>{
@@ -69,6 +84,33 @@ exports.readDibs = (req, res, next) =>  {
             }
         });
 
+
+
+
+	let welfare_list = []
+        Welfare.findAll({where: {welfare_id: welfare_ids}, raw: true})
+        .then(result => {
+            welfare_list = result;
+            Welfare_category.findAll({where:{welfare_id:welfare_ids}, raw: true})
+            .then(result=>{
+                result.forEach(element1 => {
+                    welfare_list.forEach(element2 => {
+                        if(element1.welfare_id == element2.welfare_id){
+                            element2.category = element1.category_id
+                        }
+                    })
+                });
+            })
+            .then(()=>{
+                res.send(JSON.stringify({
+                    "success" : true,
+                    "statusCode": 200,
+                    "dibs_welfare_list" :welfare_list,
+                    "token" : req.body.token
+                }));
+            })
+        })
+	/*
         Welfare.findAll({where: { welfare_id: welfare_ids }, raw: true})
         .then(result=>{
             // 성공시 성공 json 보내기
@@ -79,6 +121,7 @@ exports.readDibs = (req, res, next) =>  {
                 "token" : req.body.token
             }));
         })
+	*/
     })
     .catch(err=>{
         console.log(err);
@@ -120,6 +163,31 @@ exports.deleteDibs = (req, res, next) => {
                 }
             });
 
+        let welfare_list = []
+        Welfare.findAll({where: {welfare_id: welfare_ids}, raw: true})
+        .then(result => {
+            welfare_list = result;
+            Welfare_category.findAll({where:{welfare_id:welfare_ids}, raw: true})
+            .then(result=>{
+                result.forEach(element1 => {
+                    welfare_list.forEach(element2 => {
+                        if(element1.welfare_id == element2.welfare_id){
+                            element2.category = element1.category_id
+                        }
+                    })
+                });
+            })
+            .then(()=>{
+                res.send(JSON.stringify({
+                    "success" : true,
+                    "statusCode": 200,
+                    "dibs_welfare_list" :welfare_list,
+                    "token" : req.body.token
+                }));
+            })
+        })
+
+	    /*	
             Welfare.findAll({where: { welfare_id: welfare_ids }, raw: true})
             .then(result=>{
                 // 성공시 성공 json 보내기
@@ -130,6 +198,7 @@ exports.deleteDibs = (req, res, next) => {
                     "token" : req.body.token
                 }));
             })
+	    */
         })
     })
     .catch(err=>{
