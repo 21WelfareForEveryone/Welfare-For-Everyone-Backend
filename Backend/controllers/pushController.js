@@ -13,13 +13,15 @@ exports.getInfo = (req, res, next) => {
     // 현재 날짜
     const curDate = new Date();
 
-    const welfare_list_on = []
+    let welfare_list_on = []
+    let welfare_list = [];
     // welfare_id 배열에 들어있는 복지 정보를 Response로 반환
     PushAlarm.findAll({where: {user_id:user_info.user_id}, raw: true})
     .then(results => {
         results.forEach(element => {
             Welfare.findByPk(element.welfare_id)
             .then(welfareInfo=>{
+                welfareInfo.d_day = Math.floor((welfareInfo.start_date.getTime()- curDate.getTime())/(1000*3600*24))
                 welfare_list_on.push(welfareInfo);
             })
         });
@@ -27,7 +29,6 @@ exports.getInfo = (req, res, next) => {
     .then(()=>{
         Welfare.findAll({where: {start_date : { [Op.gte] : curDate}}, order: [['like_count', 'DESC']], raw: true})
 	.then(result=>{
-            let welfare_list = [];
             let count = 5-welfare_list_on.length;
             // console.log(welfare_list_on);
             result.forEach(element => {
@@ -40,10 +41,12 @@ exports.getInfo = (req, res, next) => {
                             }
                         });
                     if(!flag)
+                        element.d_day = Math.floor((element.start_date.getTime()- curDate.getTime())/(1000*3600*24))
                         welfare_list.push(element);                
                         count -= 1;
                 }
             });
+            // console.log(Math.floor((welfare_list[0].start_date.getTime()- curDate.getTime())/(1000*3600*24)));
             // 성공시 성공 json 보내기
             res.send(JSON.stringify({
                 "success": true,

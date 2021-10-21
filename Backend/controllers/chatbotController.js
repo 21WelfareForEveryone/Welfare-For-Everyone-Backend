@@ -40,6 +40,14 @@ exports.getResponse = (req, res, next) =>{
     const user_info = jwt.verify(req.body.token, secretObj.secret);
     user_message = req.body.chat_message;
 
+    let likedWelfareIds = [];
+    User_dibs.findAll({where: {user_id: user_info.user_id}, raw: true})
+    .then(results => {
+        results.forEach(element => {
+            likedWelfareIds.push(element.welfare_id)
+        });
+    })
+
     console.log('Chatbot API!');
 
     // send Request to kmg2933
@@ -73,7 +81,18 @@ exports.getResponse = (req, res, next) =>{
         
                 Welfare.findAll({where: { welfare_id: welfareIds }, raw: true})
                 .then(result=>{
-        
+                    result.forEach(element => {
+                        if(likedWelfareIds.includes(element.welfare_id)){
+                            element.isLiked = true;
+                        }
+                        else {
+                            element.isLiked = false;
+                        }
+                    });
+
+                    return result;
+                })
+                .then(result => {
                     res.send(JSON.stringify({
                         "success": true,
                         "statusCode" : 200,
@@ -113,7 +132,17 @@ exports.getResponse = (req, res, next) =>{
                 
                             Welfare.findAll({where: { welfare_id: welfareIdsKobert }, raw: true})
                             .then(result=>{
-                    
+                                result.forEach(element => {
+                                    if(likedWelfareIds.includes(element.welfare_id)){
+                                        element.isLiked = true;
+                                    }
+                                    else {
+                                        element.isLiked = false;
+                                    }
+                                });
+                                return result;
+                            })
+                            .then(result => {
                                 res.send(JSON.stringify({
                                     "success": true,
                                     "statusCode" : 200,
@@ -172,6 +201,17 @@ exports.getResponseDummy1 = (req, res, next) =>{
 
     dummyIds = [105, 63, 89];
     Welfare.findAll({where: { welfare_id: dummyIds }, raw: true})
+    .then(result => {
+        result.forEach(element => {
+            if(likedWelfareIds.includes(dummyIds)){
+                element.isLiked = true;
+            }
+            else {
+                element.isLiked = false;
+            }
+        });
+        return result;
+    })
     .then(result=>{
         // 성공시 성공 json 보내기
         res.send(JSON.stringify({
