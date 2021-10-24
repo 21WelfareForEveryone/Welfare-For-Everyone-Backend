@@ -12,7 +12,7 @@ const chatbotRoutes = require('./routes/chatbotRoutes');
 
 
 const update = require('./utils/schedule')
-update.check()
+// update.check()
 
 // FCM 푸시알림 코드입니다.
 const admin = require('firebase-admin')

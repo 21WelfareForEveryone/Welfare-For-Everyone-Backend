@@ -4,6 +4,8 @@ const PushAlarm = require('../models/push_alarm');
 let jwt = require("jsonwebtoken"); // 토큰 관리를 위한 jwt 모듈
 let secretObj = require("../config/jwt"); // jwt key 모듈 
 
+const admin = require('firebase-admin');
+const User = require('../models/user'); // User 모델
 
 // In-App 푸시알림 창에 표시할 정보 전송 API 
 exports.getInfo = (req, res, next) => {
@@ -95,5 +97,52 @@ exports.pushToggle = (req, res, next) => {
             .catch(err=>{console.log(err);})
         }   
     })
+
+}
+
+exports.getPushAlarm = (req, res, next) => {
+    // 현재 시간
+    const curr = new Date();
+    const utc = curr.getTime() + (curr.getTimezoneOffset() * 60 * 1000);
+    const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+    const kr_curr = new Date(utc + (KR_TIME_DIFF));
+
+    // PushAlarm DB에서 시작한 복지 정보를 가진 사용자에게 알람을 보낸다.
+    PushAlarm.findAll({where: {d_day : { [Op.lte] : kr_curr}}, raw: true})
+    .then(alarms => {
+        alarms.forEach(pushinfo => {
+
+            // 1. 파이어베이스 토큰값을 가져온다. 
+            User.findByPk(pushinfo.user_id)
+            .then(userinfo => {
+                // 2. Welfare 정보를 가져온다.
+                Welfare.findByPk(pushinfo.welfare_id)
+                .then(welfareinfo => {
+                    // 3. 푸시알림을 보낸다.
+                    let message = 
+                    {
+                        notification : {
+                            title: '모두를 위한 복지 알림입니다.',
+                            body: welfareinfo.title,
+                        },
+                        token : userinfo.user_mToken
+                    }
+
+                    admin
+                    .messaging()
+                    .send(message)
+                    .then(function(response){
+                        console.log('Successfully sent message:', response)
+                        return res.status(200).json({success: true})
+                    })
+                    .catch(function(err) {
+                        console.log('Error Sending message!!! : ', err)
+                        return res.status(400).json({success: false})
+                    });
+                })
+            })
+
+        });
+      })
 
 }

@@ -3,6 +3,7 @@ let jwt = require("jsonwebtoken"); // 토큰 관리를 위한 jwt 모듈
 let secretObj = require("../config/jwt"); // jwt key 모듈 
 var request = require('request'); // Request 생성을 위한 라이브러리 임포트
 // const https = require('https')
+const User_dibs = require('../models/dibs'); // 찜 모델 
 const Welfare = require('../models/welfare'); // 복지정보 모델
 const fetch = require('node-fetch');
 const chatbotInfo = require("../config/chatbot.json");  

@@ -12,8 +12,8 @@ const { Op } = require("sequelize");
 
 module.exports = {
   check: () => {
-   schedule.scheduleJob('0 0 8 * * *', async()=>{
-   //schedule.scheduleJob('3 * * * * *', async()=>{
+    schedule.scheduleJob('0 0 8 * * *', async()=>{
+    // schedule.scheduleJob('5 * * * * *', async()=>{
         
         // 현재 시간
         const curr = new Date();
@@ -22,13 +22,29 @@ module.exports = {
         const kr_curr = new Date(utc + (KR_TIME_DIFF));
 
         console.log(kr_curr);
-	let message = 
-                   {
+        
+        PushAlarm.findAll({where: {d_day : { [Op.lte] : kr_curr}}, raw: true})
+        .then(alarms => {
+            console.log(alarms);
+            alarms.forEach(pushinfo => {
+                // 1. 파이어베이스 토큰값을 가져온다. 
+                User.findByPk(pushinfo.user_id)
+                .then(userinfo => {
+                    // 2. Welfare 정보를 가져온다.
+                    Welfare.findByPk(pushinfo.welfare_id)
+                    .then(welfareinfo => {
+                        firebaseToken = userinfo.user_mToken;
+                        title = welfareinfo.title;
+
+                        console.log(firebaseToken, title);
+                        // 3. 푸시알림을 보낸다.
+                        let message = 
+                        {
                             notification : {
                                 title: '모두를 위한 복지 알림입니다.',
-                                body: "긴급복지 생계지원"
+                                body: "모두를 위한 복지",
                             },
-                            token:"dm4NxqWYSIyh2BnuIWzWIA:APA91bEgnpp_7-h5dnw8T9dPxFCoAQT9OLwNWgJoyopUJ9Lb3Vq1TxWy8pHjxd4jGN1mVYWASSC1oEhpRghcUETQ7aVcENvmJu9IkL0QC6kTiWYu2wip21VRNBv2-8aUdETVWZU8AO5n"
+                            token:"faOKk6bCQ4qzp1hKDDanw3:APA91bHK09p1i941ckEhiYJWP3pB3gMK9zX7c41LIkMI2MOTNJ06d3Bj8YepchK7I3bZMtVuxvB-mP7vuGDVCM9KYbe7_s5gQekb4ERYgPRoW8HAWwDU3W99G22pq0n5JXKWqYY0p1TX"
                         }
 
                         admin
@@ -42,8 +58,13 @@ module.exports = {
                             console.log('Error Sending message!!! : ', err)
                             // return res.status(400).json({success: false})
                         });
+                    })
+                })
+
+            });
+          })
+
     })
 
     }
 }
-

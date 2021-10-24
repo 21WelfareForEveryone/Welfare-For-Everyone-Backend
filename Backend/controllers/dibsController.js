@@ -10,6 +10,7 @@ exports.createDibs = (req, res, next) => {
     const user_info = jwt.verify(req.body.token, secretObj.secret);
 
     let likedWelfareIds = [];
+    likedWelfareIds.push(req.body.welfare_id);
     User_dibs.findAll({where: {user_id: user_info.user_id}, raw: true})
     .then(results => {
         results.forEach(element => {
@@ -68,7 +69,7 @@ exports.createDibs = (req, res, next) => {
                         "recommend_welfare_list" :welfare_list,
                         "token" : req.body.token
                     }));
-                })
+                })  
             })
     
         })
